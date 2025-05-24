@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/nikolastojkov/skopsgo/web/templates"
+	"github.com/cloudparallax/parallax/web/templates"
 )
 
 func LoadHandlers(router *gin.Engine) {

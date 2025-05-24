@@ -16,9 +16,20 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+*_templ.go
 
 # Go workspace file
 go.work
 .env
-/web/static/outputStyle.css
-Makefile
+
+# Node.js dependencies
+node_modules/
+
+# Vite build outputs
+web/static/dist/
+# Air live reload
+tmp/
+build-errors.log
+
+# Build artifacts
+bin/
