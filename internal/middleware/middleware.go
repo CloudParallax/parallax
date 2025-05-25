@@ -5,5 +5,6 @@ import (
 )
 
 func LoadMiddleware(app *fiber.App) {
+	app.Use(CorsMiddleware())
 	app.Use(ContentTypeHtmlMiddleware())
 }
