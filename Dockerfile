@@ -51,6 +51,8 @@ RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /${APP_NAME} ./cmd/parallax
 # static-debian11 is suitable for CGO_ENABLED=0 Go binaries.
 FROM debian AS runtime
 # FROM gcr.io/distroless/static-debian12 AS runtime
+#
+RUN apt update && apt install -y ca-certificates && apt install curl -y && rm -rf /var/lib/apt/lists/* && apt clean
 
 # These ENV vars might be overridden by .env or could be removed if .env is the sole source of truth
 ENV APP_NAME=parallax
