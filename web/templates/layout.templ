@@ -1,12 +1,13 @@
 package templates
 
-templ Layout(contents templ.Component) {
+templ Layout(contents templ.Component, csrfToken string) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+			<meta name="csrf-token" content={ csrfToken }/>
 			<title>Placeholder</title>
 			<link rel="stylesheet" href="/static/dist/output.css"/>
 		</head>
@@ -15,6 +16,14 @@ templ Layout(contents templ.Component) {
 				@contents
 			</main>
 			<script src="https://unpkg.com/htmx.org@2.0.4"></script>
+			<script>
+				document.addEventListener('DOMContentLoaded', function() {
+					const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+					document.body.addEventListener('htmx:configRequest', function(evt) {
+						evt.detail.headers['X-Csrf-Token'] = csrfToken;
+					});
+				});
+			</script>
 		</body>
 	</html>
 }

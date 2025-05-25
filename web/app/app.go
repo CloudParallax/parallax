@@ -10,7 +10,6 @@ import (
 	staticfs "github.com/cloudparallax/parallax/web/static"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/compress"
-	"github.com/gofiber/fiber/v3/middleware/csrf"
 	"github.com/gofiber/fiber/v3/middleware/logger"
 	recoverer "github.com/gofiber/fiber/v3/middleware/recover"
 	"github.com/gofiber/fiber/v3/middleware/static"
@@ -27,8 +26,8 @@ func LoadApp() {
 	// Initialize default config
 	app.Use(compress.New())
 
-	// Initialize default config
-	app.Use(csrf.New())
+	// Initialize CSRF with custom config for HTMX
+	// app.Use(middleware.CSRFMiddleware())
 
 	// Initialize default config
 	app.Use(recoverer.New())
