@@ -1,17 +1,20 @@
 package handlers
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/gin-gonic/gin"
-  "fmt"
-) 
+)
 
 var counterValue int = 1
 
 func loadCounterHandler(router *gin.Engine) {
-  counterRouter := router.Group("/counter")
+	counterRouter := router.Group("/counter")
 
-  counterRouter.PUT("/increment", func(context *gin.Context) {
+	counterRouter.PUT("/increment", func(context *gin.Context) {
 		counterValue++
+		time.Sleep(2 * time.Second)
 		context.String(context.Writer.Status(), fmt.Sprintf("%d", counterValue))
 	})
 
