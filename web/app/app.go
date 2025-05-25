@@ -26,9 +26,6 @@ func LoadApp() {
 	// Initialize default config
 	app.Use(compress.New())
 
-	// Initialize CSRF with custom config for HTMX
-	// app.Use(middleware.CSRFMiddleware())
-
 	// Initialize default config
 	app.Use(recoverer.New())
 

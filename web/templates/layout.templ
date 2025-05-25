@@ -12,6 +12,8 @@ templ Layout(contents templ.Component, csrfToken string) {
 			<link rel="stylesheet" href="/static/dist/output.css"/>
 		</head>
 		<body>
+			<h1>{ csrfToken } </h1>
+			Ttest
 			<main id="body">
 				@contents
 			</main>
@@ -19,6 +21,7 @@ templ Layout(contents templ.Component, csrfToken string) {
 			<script>
 				document.addEventListener('DOMContentLoaded', function() {
 					const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+					console.log(csrfToken);
 					document.body.addEventListener('htmx:configRequest', function(evt) {
 						evt.detail.headers['X-Csrf-Token'] = csrfToken;
 					});
