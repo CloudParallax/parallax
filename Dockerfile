@@ -49,7 +49,8 @@ RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /${APP_NAME} ./cmd/parallax
 # Stage 2: Runtime environment
 # Use a distroless image for a minimal and secure runtime.
 # static-debian11 is suitable for CGO_ENABLED=0 Go binaries.
-FROM gcr.io/distroless/static-debian12 AS runtime
+FROM debian AS runtime
+# FROM gcr.io/distroless/static-debian12 AS runtime
 
 # These ENV vars might be overridden by .env or could be removed if .env is the sole source of truth
 ENV APP_NAME=parallax
