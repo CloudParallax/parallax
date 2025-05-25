@@ -37,6 +37,7 @@ RUN templ generate
 # Build CSS using Tailwind CSS
 # Ensure output directory exists as specified in Makefile (web/static/dist/)
 RUN mkdir -p ./web/static/dist
+RUN rm -rf node_modules && pnpm install
 RUN pnpx @tailwindcss/cli -i ./web/static/main.css -o ./web/static/dist/output.css --minify
 
 # Build the Go application
