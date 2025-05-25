@@ -14,7 +14,7 @@ func loadCounterHandler(router *gin.Engine) {
 
 	counterRouter.PUT("/increment", func(context *gin.Context) {
 		counterValue++
-		time.Sleep(2 * time.Second)
+		time.Sleep(1000 * time.Millisecond)
 		context.String(context.Writer.Status(), fmt.Sprintf("%d", counterValue))
 	})
 
