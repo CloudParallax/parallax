@@ -1,15 +1,15 @@
 package handlers
 
 import (
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v3"
 	"github.com/cloudparallax/parallax/web/templates"
 )
 
-func LoadHandlers(router *gin.Engine) {
-	router.GET("/", func(context *gin.Context) {
+func LoadHandlers(app *fiber.App) {
+	app.Get("/", func(c fiber.Ctx) error {
 		component := templates.Splash()
-		templates.Layout(component).Render(context, context.Writer)
+		return templates.Layout(component).Render(c.Context(), c.Response().BodyWriter())
 	})
 
-	loadCounterHandler(router)
+	loadCounterHandler(app)
 }

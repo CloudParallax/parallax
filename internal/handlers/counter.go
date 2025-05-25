@@ -3,25 +3,23 @@ package handlers
 import (
 	"fmt"
 
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v3"
 )
 
 var counterValue int = 1
 
-func loadCounterHandler(router *gin.Engine) {
-	counterRouter := router.Group("/counter")
+func loadCounterHandler(app *fiber.App) {
+	counterGroup := app.Group("/counter")
 
-	counterRouter.PUT("/increment", func(context *gin.Context) {
+	counterGroup.Put("/increment", func(c fiber.Ctx) error {
 		counterValue++
-		// time.Sleep(1000 * time.Millisecond)
-		context.String(context.Writer.Status(), fmt.Sprintf("%d", counterValue))
+		return c.SendString(fmt.Sprintf("%d", counterValue))
 	})
 
-	counterRouter.PUT("/decrement", func(context *gin.Context) {
+	counterGroup.Put("/decrement", func(c fiber.Ctx) error {
 		if counterValue != 1 {
 			counterValue--
 		}
-
-		context.String(context.Writer.Status(), fmt.Sprintf("%d", counterValue))
+		return c.SendString(fmt.Sprintf("%d", counterValue))
 	})
 }

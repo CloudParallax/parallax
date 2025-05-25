@@ -1,9 +1,9 @@
 package middleware
 
 import (
-  "github.com/gin-gonic/gin"
+  "github.com/gofiber/fiber/v3"
 )
 
-func LoadMiddleware(router *gin.Engine) {
-	router.Use(ContentTypeHtmlMiddleware())
+func LoadMiddleware(app *fiber.App) {
+	app.Use(ContentTypeHtmlMiddleware())
 }

@@ -2,29 +2,40 @@ package app
 
 import (
 	"fmt"
-	"net/http"
+	"log"
 	"os"
 
 	"github.com/cloudparallax/parallax/internal/handlers"
 	"github.com/cloudparallax/parallax/internal/middleware"
-	"github.com/cloudparallax/parallax/web/static"
-	"github.com/gin-gonic/gin"
+	staticfs "github.com/cloudparallax/parallax/web/static"
+	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/logger"
+	"github.com/gofiber/fiber/v3/middleware/static"
 )
 
 func LoadApp() {
 	port := os.Getenv("SERVER_PORT")
-	router := gin.Default()
+
+	app := fiber.New()
+
+	// Initialize default config
+	app.Use(logger.New())
+
 	if os.Getenv("ENV") == "production" {
-		router.StaticFS("/static", http.FS(static.StaticFS))
-		gin.SetMode(gin.ReleaseMode)
+		app.Use("/static*", static.New("", static.Config{
+			FS:     staticfs.StaticFS,
+			Browse: false,
+		}))
 	} else {
-		router.Static("/static", "./web/static")
-		gin.SetMode(gin.DebugMode)
+		app.Get("/static*", static.New("", static.Config{
+			FS:     os.DirFS("web/static"),
+			Browse: false,
+		}))
 	}
 
-	middleware.LoadMiddleware(router)
-	handlers.LoadHandlers(router)
+	middleware.LoadMiddleware(app)
+	handlers.LoadHandlers(app)
 	fmt.Printf("Staring Server at :%s", port)
 
-	router.Run(fmt.Sprintf(":%s", port))
+	log.Fatal(app.Listen(fmt.Sprintf(":%s", port)))
 }
