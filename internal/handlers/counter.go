@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,7 +13,7 @@ func loadCounterHandler(router *gin.Engine) {
 
 	counterRouter.PUT("/increment", func(context *gin.Context) {
 		counterValue++
-		time.Sleep(1000 * time.Millisecond)
+		// time.Sleep(1000 * time.Millisecond)
 		context.String(context.Writer.Status(), fmt.Sprintf("%d", counterValue))
 	})
 
