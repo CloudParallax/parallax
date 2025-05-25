@@ -24,6 +24,7 @@ func LoadApp() {
 
 	middleware.LoadMiddleware(router)
 	handlers.LoadHandlers(router)
+	fmt.Printf("Staring Server at :%s", port)
 
 	router.Run(fmt.Sprintf(":%s", port))
 }
