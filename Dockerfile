@@ -14,12 +14,6 @@ RUN npm install -g pnpm
 RUN go install github.com/a-h/templ/cmd/templ@latest
 
 # Set application name and root directory for the build stage
-# These ENV vars might be overridden by .env or could be removed if .env is the sole source of truth
-ENV APP_NAME=parallax
-ENV SERVER_PORT=8081
-ENV GIN_MODE=release
-ENV ENV=production
-ENV APP_ROOT=/app
 WORKDIR ${APP_ROOT}
 
 # Copy Go module files first to leverage Docker layer caching for dependencies
@@ -48,16 +42,13 @@ RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /${APP_NAME} ./cmd/parallax
 
 # Stage 2: Runtime environment
 # Use a distroless image for a minimal and secure runtime.
-# static-debian11 is suitable for CGO_ENABLED=0 Go binaries.
+# static-debian12 is suitable for CGO_ENABLED=0 Go binaries.
 # FROM debian AS runtime
 FROM gcr.io/distroless/static-debian12 AS runtime
-#
-# RUN apt update && apt install -y ca-certificates && apt install curl -y && rm -rf /var/lib/apt/lists/* && apt clean
 
 # These ENV vars might be overridden by .env or could be removed if .env is the sole source of truth
 ENV APP_NAME=parallax
 ENV ENV=production
-ENV SERVER_PORT=80
 ENV GIN_MODE=release
 WORKDIR /app
 
