@@ -49,15 +49,15 @@ RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o /${APP_NAME} ./cmd/parallax
 # Stage 2: Runtime environment
 # Use a distroless image for a minimal and secure runtime.
 # static-debian11 is suitable for CGO_ENABLED=0 Go binaries.
-FROM debian AS runtime
-# FROM gcr.io/distroless/static-debian12 AS runtime
+# FROM debian AS runtime
+FROM gcr.io/distroless/static-debian12 AS runtime
 #
-RUN apt update && apt install -y ca-certificates && apt install curl -y && rm -rf /var/lib/apt/lists/* && apt clean
+# RUN apt update && apt install -y ca-certificates && apt install curl -y && rm -rf /var/lib/apt/lists/* && apt clean
 
 # These ENV vars might be overridden by .env or could be removed if .env is the sole source of truth
 ENV APP_NAME=parallax
 ENV ENV=production
-ENV SERVER_PORT=8081
+ENV SERVER_PORT=80
 ENV GIN_MODE=release
 WORKDIR /app
 
@@ -71,7 +71,7 @@ COPY --from=build-env /${APP_NAME} /app/${APP_NAME}
 
 # Expose the port the application listens on
 # This should match the port configured in the application (e.g., via .env or default)
-EXPOSE 8081
+EXPOSE 80
 
 # Define the command to run the application
 # Using the application binary copied into /app/
