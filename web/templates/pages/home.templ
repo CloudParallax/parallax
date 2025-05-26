@@ -1,0 +1,174 @@
+package pages
+
+import "github.com/cloudparallax/parallax/web/templates/components"
+
+templ HomePage() {
+	<div class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+		<!-- Hero Section -->
+		<section class="relative py-20 px-4 sm:px-6 lg:px-8">
+			<div class="max-w-7xl mx-auto">
+				<div class="text-center">
+					<h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+						Welcome to
+						<span class="text-blue-600">CloudParallax</span>
+					</h1>
+					<p class="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
+						Building the future of cloud infrastructure with innovative solutions
+						and cutting-edge technology. Experience seamless deployment and scaling.
+					</p>
+					<div class="flex flex-col sm:flex-row gap-4 justify-center">
+						<button 
+							class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
+							hx-get="/blog"
+							hx-target="#main-content"
+							hx-push-url="true"
+						>
+							Explore Blog
+						</button>
+						<button 
+							class="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
+							hx-get="/about"
+							hx-target="#main-content"
+							hx-push-url="true"
+						>
+							Learn More
+						</button>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Features Section -->
+		<section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+			<div class="max-w-7xl mx-auto">
+				<div class="text-center mb-16">
+					<h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+						Why Choose CloudParallax?
+					</h2>
+					<p class="text-xl text-gray-600 max-w-2xl mx-auto">
+						Our platform offers enterprise-grade features with developer-friendly tools
+					</p>
+				</div>
+
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+					<div class="text-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+						<div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+							<svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+							</svg>
+						</div>
+						<h3 class="text-xl font-semibold text-gray-900 mb-3">Lightning Fast</h3>
+						<p class="text-gray-600">
+							Deploy your applications in seconds with our optimized infrastructure
+						</p>
+					</div>
+
+					<div class="text-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+						<div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+							<svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+							</svg>
+						</div>
+						<h3 class="text-xl font-semibold text-gray-900 mb-3">Reliable</h3>
+						<p class="text-gray-600">
+							99.9% uptime guarantee with automatic failover and redundancy
+						</p>
+					</div>
+
+					<div class="text-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
+						<div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+							<svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.99 1.99 0 013 12V7a4 4 0 014-4z"></path>
+							</svg>
+						</div>
+						<h3 class="text-xl font-semibold text-gray-900 mb-3">Scalable</h3>
+						<p class="text-gray-600">
+							Auto-scaling capabilities that grow with your business needs
+						</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- Demo Section -->
+		<section class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+			<div class="max-w-4xl mx-auto">
+				<div class="text-center mb-12">
+					<h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+						See It In Action
+					</h2>
+					<p class="text-xl text-gray-600">
+						Experience our HTMX-powered dynamic loading
+					</p>
+				</div>
+
+				<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+					<div class="flex space-x-4 mb-4">
+						<button 
+							class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
+							hx-get="/api/demo/content/1"
+							hx-target="#demo-content"
+							hx-indicator="#demo-loading"
+						>
+							Load Content 1
+						</button>
+						<button 
+							class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
+							hx-get="/api/demo/content/2"
+							hx-target="#demo-content"
+							hx-indicator="#demo-loading"
+						>
+							Load Content 2
+						</button>
+						<button 
+							class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
+							hx-get="/api/demo/content/3"
+							hx-target="#demo-content"
+							hx-indicator="#demo-loading"
+						>
+							Load Content 3
+						</button>
+					</div>
+
+					<div id="demo-loading" class="htmx-indicator mb-4">
+						@components.LoadingSpinner()
+					</div>
+
+					<div id="demo-content" class="min-h-24 bg-gray-50 rounded-md p-4">
+						<p class="text-gray-500 italic">Click a button above to load content dynamically</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<!-- CTA Section -->
+		<section class="py-16 px-4 sm:px-6 lg:px-8 bg-blue-600">
+			<div class="max-w-4xl mx-auto text-center">
+				<h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+					Ready to Get Started?
+				</h2>
+				<p class="text-xl text-blue-100 mb-8">
+					Join thousands of developers who trust CloudParallax for their infrastructure needs
+				</p>
+				<div class="flex flex-col sm:flex-row gap-4 justify-center">
+					<button 
+						class="bg-white text-blue-600 hover:bg-gray-100 font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
+						hx-get="/contact"
+						hx-target="#main-content"
+						hx-push-url="true"
+					>
+						Contact Sales
+					</button>
+					<button 
+						class="border border-white text-white hover:bg-white hover:text-blue-600 font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
+						hx-get="/blog"
+						hx-target="#main-content"
+						hx-push-url="true"
+					>
+						Read Documentation
+					</button>
+				</div>
+			</div>
+		</section>
+	</div>
+}
