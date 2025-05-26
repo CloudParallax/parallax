@@ -51,6 +51,12 @@ func LoadApp() {
 		}))
 	}
 
+	// Add preload headers for CSS assets
+	app.Use(func(c fiber.Ctx) error {
+		c.Set("Link", "</static/dist/output.css>; rel=preload; as=style")
+		return c.Next()
+	})
+
 	middleware.LoadMiddleware(app)
 	handlers.LoadHandlers(app)
 	fmt.Printf("Staring Server at :%s", port)
