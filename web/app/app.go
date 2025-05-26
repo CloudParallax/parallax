@@ -10,6 +10,7 @@ import (
 	staticfs "github.com/cloudparallax/parallax/web/static"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/compress"
+	"github.com/gofiber/fiber/v3/middleware/favicon"
 	"github.com/gofiber/fiber/v3/middleware/logger"
 	recoverer "github.com/gofiber/fiber/v3/middleware/recover"
 	"github.com/gofiber/fiber/v3/middleware/static"
@@ -19,6 +20,12 @@ func LoadApp() {
 	port := os.Getenv("SERVER_PORT")
 
 	app := fiber.New()
+
+	// Or extend your config for customization
+	app.Use(favicon.New(favicon.Config{
+		File: "./web/static/favicon.svg",
+		URL:  "/favicon.ico",
+	}))
 
 	// Initialize default config
 	app.Use(logger.New())

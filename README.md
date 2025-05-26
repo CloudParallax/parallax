@@ -1,13 +1,13 @@
 # Parallax
 
-An opinionated, modern Go web starter kit featuring Gin, HTMX, Tailwind CSS v4, and Templ with live reloading.
+An opinionated, modern Go web starter kit featuring Fiber v3, HTMX, Tailwind CSS v4, and Templ with live reloading.
 
-*Thanks to [RevanchistX](https://github.com/RevanchistX) & [Skopsgo](https://github.com/nikolastojkov/skopsgo) &  for this wonderful rendition.*
+*Thanks to [RevanchistX](https://github.com/RevanchistX) & [Skopsgo](https://github.com/nikolastojkov/skopsgo) for this wonderful rendition.*
 
 ## ✨ Features
 
 - **🚀 Go 1.24** - Latest Go version with modern language features
-- **🌐 Gin Framework** - High-performance HTTP web framework
+- **🌐 Fiber Framework v3** - High-performance HTTP web framework built on Fasthttp
 - **⚡ HTMX** - Modern web interactivity without complex JavaScript
 - **🎨 Tailwind CSS v4** - Latest utility-first CSS framework
 - **📄 Templ** - Type-safe Go templating
@@ -15,10 +15,11 @@ An opinionated, modern Go web starter kit featuring Gin, HTMX, Tailwind CSS v4, 
 - **🐳 Docker Ready** - Complete containerization support
 - **📦 pnpm** - Fast, disk space efficient package manager
 - **🛠️ Make Integration** - Simplified build and development commands
+- **🔒 Built-in Middleware** - Compression, logging, recovery, and CORS support
 
 ## 🎯 Why Parallax?
 
-This starter kit addresses the need for a modern, batteries-included Go web development setup that combines the best of server-side rendering with modern frontend tooling. Perfect for developers who want the simplicity of Go with the interactivity of HTMX and the styling power of Tailwind CSS.
+This starter kit addresses the need for a modern, batteries-included Go web development setup that combines the best of server-side rendering with modern frontend tooling. Perfect for developers who want the performance of Fiber with the interactivity of HTMX and the styling power of Tailwind CSS.
 
 ## 📋 Prerequisites
 
@@ -48,18 +49,18 @@ This starter kit addresses the need for a modern, batteries-included Go web deve
    ```
 
 4. **Open your browser**
-   Navigate to `http://localhost:8081` to see the welcome page with the interactive counter demo.
+   Navigate to `http://localhost:8080` to see the welcome page with the interactive counter demo.
 
 ### Method 2: Docker Development
 
 1. **Build the container**
    ```bash
-   docker build --rm -t skopsgo .
+   docker build --rm -t parallax .
    ```
 
 2. **Run the container**
    ```bash
-   docker run -p 8080:8080 skopsgo
+   docker run -p 8080:8080 parallax
    ```
 
 ## 🛠️ Available Commands
@@ -75,11 +76,12 @@ This starter kit addresses the need for a modern, batteries-included Go web deve
 | `make clean` | Clean build artifacts |
 | `make css-build` | Build CSS with Tailwind |
 | `make templ-generate` | Generate Go code from Templ templates |
+| `make install` | Install all dependencies |
 
 ## 📁 Project Structure
 
 ```
-skopsgo/
+parallax/
 ├── cmd/parallax/           # Application entry point
 ├── internal/
 │   ├── config/            # Configuration management
@@ -92,14 +94,12 @@ skopsgo/
 ├── .air.toml             # Air live reload configuration
 ├── Dockerfile            # Container configuration
 ├── Makefile              # Build automation
-└── tailwind.config.js    # Tailwind CSS configuration
+└── package.json          # Frontend dependencies
 ```
 
 ## 🎨 Getting Started with Development
 
 After running the setup, you'll see a splash screen with an example HTMX counter to verify everything works correctly.
-
-<img src="https://i.ibb.co/RhHDTRd/splash-Final.jpg" height="480px" />
 
 ### Creating Your First Page
 
@@ -111,9 +111,9 @@ After running the setup, you'll see a splash screen with an example HTMX counter
 ### Cleaning Up Demo Content
 
 When ready to start your project, you can safely remove:
-- `web/templates/splash.templ` - Demo splash page template
-- `internal/handlers/counter.go` - Counter demo handlers
-- `LoadCounterHandler` function call in `internal/handlers/handlers.go`
+- Demo splash page templates in `web/templates/`
+- Counter demo handlers in `internal/handlers/`
+- Demo route registrations in your handlers
 
 ## 🔧 Customization
 
@@ -133,9 +133,15 @@ Then update references in:
 
 Copy `.env.example` to `.env` and configure:
 ```env
-PORT=8080
-GIN_MODE=debug
-# Add your environment-specific variables
+SERVER_PORT=8080
+
+# CORS Configuration
+CORS_ALLOW_ORIGINS=*
+CORS_ALLOW_METHODS=GET,POST,HEAD,PUT,DELETE,PATCH,OPTIONS
+CORS_ALLOW_HEADERS=Origin,Content-Type,Accept,Authorization,X-Requested-With
+CORS_EXPOSE_HEADERS=Content-Length
+CORS_ALLOW_CREDENTIALS=false
+CORS_MAX_AGE=86400
 ```
 
 ## 🧪 Testing
@@ -163,9 +169,19 @@ This creates an optimized binary in `./bin/parallax` with:
 The included Dockerfile uses multi-stage builds for optimal production images:
 
 ```bash
-docker build -t skopsgo:production .
-docker run -p 8080:8080 skopsgo:production
+docker build -t parallax:production .
+docker run -p 8080:8080 parallax:production
 ```
+
+## 🏗️ Architecture
+
+This starter kit is built on:
+
+- **Fiber v3**: High-performance web framework built on Fasthttp
+- **Templ**: Type-safe HTML templating for Go
+- **HTMX**: Modern web interactions without heavy JavaScript
+- **Tailwind CSS v4**: Utility-first CSS framework
+- **Air**: Live reloading for development
 
 ## 🤝 Contributing
 
@@ -180,9 +196,9 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 🙏 Acknowledgments
 
-- [Skopsgo](https://github.com/nikolastojkov/skopsgo) Original Package
-- [HTMX](https://htmx.org/) for making web development fun again
-- [Templ](https://github.com/a-h/templ) for type-safe Go templates
-- [Gin](https://github.com/gin-gonic/gin) for the excellent web framework
-- [Tailwind CSS](https://tailwindcss.com/) for utility-first styling
-- [Air](https://github.com/air-verse/air) for seamless live reloading
+- [Skopsgo](https://github.com/nikolastojkov/skopsgo) - Original inspiration
+- [Fiber](https://github.com/gofiber/fiber) - High-performance web framework
+- [HTMX](https://htmx.org/) - Making web development fun again
+- [Templ](https://github.com/a-h/templ) - Type-safe Go templates
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first styling
+- [Air](https://github.com/air-verse/air) - Seamless live reloading
