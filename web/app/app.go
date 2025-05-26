@@ -23,7 +23,7 @@ func LoadApp() {
 
 	// Or extend your config for customization
 	app.Use(favicon.New(favicon.Config{
-		File: "./web/static/favicon.svg",
+		File: "./web/static/favicon.ico",
 		URL:  "/favicon.ico",
 	}))
 
