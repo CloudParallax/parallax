@@ -8,6 +8,7 @@ import (
 func LoadMiddleware(app *fiber.App) {
 	sessionMiddleware, sessionStore := session.NewWithStore()
 	app.Use(CorsMiddleware())
+	app.Use(AssetPreloadMiddleware())
 	app.Use(sessionMiddleware)
 	app.Use(CSRFMiddleware(sessionStore))
 	app.Use(ContentTypeHtmlMiddleware())

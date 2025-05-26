@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"os"
+	"os/exec"
 	"strings"
 
 	"github.com/cloudparallax/parallax/internal/services"
@@ -106,6 +108,30 @@ func setupAPIRoutes(app *fiber.App) {
 		</div>`
 
 		return c.Type("text/html").SendString(response)
+	})
+
+	// CSS rebuild endpoint for development
+	api.Post("/rebuild-css", func(c fiber.Ctx) error {
+		if os.Getenv("ENV") == "production" {
+			return c.Status(fiber.StatusForbidden).SendString("Not available in production")
+		}
+
+		cmd := exec.Command("tailwindcss", "-i", "./web/static/main.css", "-o", "./web/static/dist/output.css")
+		output, err := cmd.CombinedOutput()
+		
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"success": false,
+				"error": err.Error(),
+				"output": string(output),
+			})
+		}
+
+		return c.JSON(fiber.Map{
+			"success": true,
+			"message": "CSS rebuilt successfully",
+			"output": string(output),
+		})
 	})
 }
 
