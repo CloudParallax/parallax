@@ -21,12 +21,6 @@ func LoadApp() {
 
 	app := fiber.New()
 
-	// Or extend your config for customization
-	app.Use(favicon.New(favicon.Config{
-		File: "./web/static/favicon.ico",
-		URL:  "/favicon.ico",
-	}))
-
 	// Initialize default config
 	app.Use(logger.New())
 
@@ -41,10 +35,19 @@ func LoadApp() {
 			FS:     staticfs.StaticFS,
 			Browse: false,
 		}))
+
+		app.Use(favicon.New(favicon.Config{
+			File:       "favicon.ico",
+			FileSystem: staticfs.StaticFS,
+		}))
 	} else {
 		app.Get("/static*", static.New("", static.Config{
 			FS:     os.DirFS("web/static"),
 			Browse: false,
+		}))
+		app.Use(favicon.New(favicon.Config{
+			File: "./web/static/favicon.ico",
+			URL:  "/favicon.ico",
 		}))
 	}
 
