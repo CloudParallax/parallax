@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/cloudparallax/parallax/internal/services"
 	"github.com/cloudparallax/parallax/internal/views"
@@ -18,10 +19,20 @@ func LoadHandlers(app *fiber.App) {
 	// Initialize blog service
 	blogService = services.NewBlogService("content/blog")
 
+	// Helper function to check if request is from HTMX
+	isHTMXRequest := func(c fiber.Ctx) bool {
+		return c.Get("HX-Request") == "true"
+	}
+
 	// Home page
 	app.Get("/", func(c fiber.Ctx) error {
 		csrfToken := csrf.TokenFromContext(c)
 		component := pages.HomePage()
+
+		if isHTMXRequest(c) {
+			return component.Render(c.Context(), c.Response().BodyWriter())
+		}
+
 		return layouts.BaseLayout("Home", csrfToken, component).Render(c.Context(), c.Response().BodyWriter())
 	})
 
@@ -34,6 +45,11 @@ func LoadHandlers(app *fiber.App) {
 		}
 
 		component := pages.BlogListPage(posts)
+
+		if isHTMXRequest(c) {
+			return component.Render(c.Context(), c.Response().BodyWriter())
+		}
+
 		return layouts.BaseLayout("Blog", csrfToken, component).Render(c.Context(), c.Response().BodyWriter())
 	})
 
@@ -47,8 +63,37 @@ func LoadHandlers(app *fiber.App) {
 		}
 
 		component := pages.BlogPostPage(*post)
+
+		if isHTMXRequest(c) {
+			return component.Render(c.Context(), c.Response().BodyWriter())
+		}
+
 		return layouts.BaseLayout(post.Title, csrfToken, component).Render(c.Context(), c.Response().BodyWriter())
 	})
+
+	// About page
+	app.Get("/about", func(c fiber.Ctx) error {
+		csrfToken := csrf.TokenFromContext(c)
+		component := pages.AboutPage()
+
+		if isHTMXRequest(c) {
+			return component.Render(c.Context(), c.Response().BodyWriter())
+		}
+
+		return layouts.BaseLayout("About", csrfToken, component).Render(c.Context(), c.Response().BodyWriter())
+	})
+
+	// Contact page
+	// app.Get("/contact", func(c fiber.Ctx) error {
+	// 	csrfToken := csrf.TokenFromContext(c)
+	// 	component := pages.ContactPage()
+
+	// 	if isHTMXRequest(c) {
+	// 		return component.Render(c.Context(), c.Response().BodyWriter())
+	// 	}
+
+	// 	return layouts.BaseLayout("Contact", csrfToken, component).Render(c.Context(), c.Response().BodyWriter())
+	// })
 
 	// Demo API routes for HTMX examples
 	app.Get("/api/demo/content/:id", func(c fiber.Ctx) error {
@@ -108,6 +153,8 @@ func LoadHandlers(app *fiber.App) {
 			`
 		}
 
+		// Clean up extra whitespace
+		content = strings.TrimSpace(content)
 		return c.Type("text/html").SendString(content)
 	})
 
