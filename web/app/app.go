@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/cloudparallax/parallax/internal/handlers"
 	"github.com/cloudparallax/parallax/internal/middleware"
@@ -32,13 +33,11 @@ func LoadApp() {
 
 	if os.Getenv("ENV") == "production" {
 		app.Use("/static*", static.New("", static.Config{
-			FS:     staticfs.StaticFS,
-			Browse: false,
-			MaxAge: 86400, // 24 hours in seconds
-			ModifyResponse: func(c fiber.Ctx) error {
-				c.Set("Cache-Control", "public, max-age=86400")
-				return c.Next()
-			},
+			FS:            staticfs.StaticFS,
+			Browse:        false,
+			MaxAge:        86400, // 24 hours in seconds
+			Compress:      true,
+			CacheDuration: time.Minute * 10,
 		}))
 
 		app.Use(favicon.New(favicon.Config{
@@ -47,13 +46,11 @@ func LoadApp() {
 		}))
 	} else {
 		app.Get("/static*", static.New("", static.Config{
-			FS:     os.DirFS("web/static"),
-			Browse: false,
-			MaxAge: 300, // 5 minutes in development
-			ModifyResponse: func(c fiber.Ctx) error {
-				c.Set("Cache-Control", "public, max-age=300")
-				return c.Next()
-			},
+			FS:            os.DirFS("web/static"),
+			Browse:        false,
+			MaxAge:        300, // 5 minutes in development
+			Compress:      true,
+			CacheDuration: time.Minute * 10,
 		}))
 		app.Use(favicon.New(favicon.Config{
 			File: "./web/static/favicon.ico",
