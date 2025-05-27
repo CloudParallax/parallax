@@ -17,7 +17,7 @@ templ HomePage() {
 						and cutting-edge technology. Experience seamless deployment and scaling.
 					</p>
 					<div class="flex flex-col sm:flex-row gap-4 justify-center">
-						<button 
+						<button
 							class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
 							hx-get="/blog"
 							hx-target="#main-content"
@@ -25,7 +25,7 @@ templ HomePage() {
 						>
 							Explore Blog
 						</button>
-						<button 
+						<button
 							class="border border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
 							hx-get="/about"
 							hx-target="#main-content"
@@ -37,7 +37,6 @@ templ HomePage() {
 				</div>
 			</div>
 		</section>
-
 		<!-- Features Section -->
 		<section class="py-16 px-4 sm:px-6 lg:px-8 bg-white">
 			<div class="max-w-7xl mx-auto">
@@ -49,7 +48,6 @@ templ HomePage() {
 						Our platform offers enterprise-grade features with developer-friendly tools
 					</p>
 				</div>
-
 				<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 					<div class="text-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
 						<div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -62,7 +60,6 @@ templ HomePage() {
 							Deploy your applications in seconds with our optimized infrastructure
 						</p>
 					</div>
-
 					<div class="text-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
 						<div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
 							<svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,7 +71,6 @@ templ HomePage() {
 							99.9% uptime guarantee with automatic failover and redundancy
 						</p>
 					</div>
-
 					<div class="text-center p-6 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200">
 						<div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
 							<svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,58 +85,74 @@ templ HomePage() {
 				</div>
 			</div>
 		</section>
-
-		<!-- Demo Section -->
+		<!-- Analytics Charts Section -->
 		<section class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
-			<div class="max-w-4xl mx-auto">
+			<div class="max-w-7xl mx-auto">
 				<div class="text-center mb-12">
 					<h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-						See It In Action
+						Real-time Analytics Dashboard
 					</h2>
 					<p class="text-xl text-gray-600">
-						Experience our HTMX-powered dynamic loading
+						Visualize your infrastructure metrics with interactive D3.js charts
 					</p>
 				</div>
-
-				<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-					<div class="flex space-x-4 mb-4">
-						<button 
-							class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
-							hx-get="/api/demo/content/1"
-							hx-target="#demo-content"
-							hx-indicator="#demo-loading"
-						>
-							Load Content 1
-						</button>
-						<button 
-							class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
-							hx-get="/api/demo/content/2"
-							hx-target="#demo-content"
-							hx-indicator="#demo-loading"
-						>
-							Load Content 2
-						</button>
-						<button 
-							class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
-							hx-get="/api/demo/content/3"
-							hx-target="#demo-content"
-							hx-indicator="#demo-loading"
-						>
-							Load Content 3
-						</button>
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+					<!-- Line Chart -->
+					<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+						<h3 class="text-lg font-semibold text-gray-900 mb-4">Server Performance</h3>
+						<div id="line-chart" class="w-full h-64"></div>
 					</div>
-
-					<div id="demo-loading" class="htmx-indicator mb-4">
-						@components.LoadingSpinner()
+					<!-- Bar Chart -->
+					<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+						<h3 class="text-lg font-semibold text-gray-900 mb-4">Resource Usage</h3>
+						<div id="bar-chart" class="w-full h-64"></div>
 					</div>
-
-					<div id="demo-content" class="min-h-24 bg-gray-50 rounded-md p-4">
-						<p class="text-gray-500 italic">Click a button above to load content dynamically</p>
+				</div>
+				<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+					<!-- Donut Chart -->
+					<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+						<h3 class="text-lg font-semibold text-gray-900 mb-4">Traffic Distribution</h3>
+						<div id="donut-chart" class="w-full h-64 flex justify-center items-center"></div>
+					</div>
+					<!-- Demo Section -->
+					<div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+						<h3 class="text-lg font-semibold text-gray-900 mb-4">HTMX Demo</h3>
+						<div class="flex space-x-2 mb-4 flex-wrap gap-2">
+							<button
+								class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-3 rounded-md transition-colors duration-200 text-sm"
+								hx-get="/api/demo/content/1"
+								hx-target="#demo-content"
+								hx-indicator="#demo-loading"
+							>
+								Load Content 1
+							</button>
+							<button
+								class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-3 rounded-md transition-colors duration-200 text-sm"
+								hx-get="/api/demo/content/2"
+								hx-target="#demo-content"
+								hx-indicator="#demo-loading"
+							>
+								Load Content 2
+							</button>
+							<button
+								class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-3 rounded-md transition-colors duration-200 text-sm"
+								hx-get="/api/demo/content/3"
+								hx-target="#demo-content"
+								hx-indicator="#demo-loading"
+							>
+								Load Content 3
+							</button>
+						</div>
+						<div id="demo-loading" class="htmx-indicator mb-4">
+							@components.LoadingSpinner()
+						</div>
+						<div id="demo-content" class="min-h-24 bg-gray-50 rounded-md p-4">
+							<p class="text-gray-500 italic text-sm">Click a button above to load content dynamically</p>
+						</div>
 					</div>
 				</div>
 			</div>
 		</section>
-
 		<!-- CTA Section -->
 		<section class="py-16 px-4 sm:px-6 lg:px-8 bg-blue-600">
 			<div class="max-w-4xl mx-auto text-center">
@@ -151,7 +163,7 @@ templ HomePage() {
 					Join thousands of developers who trust CloudParallax for their infrastructure needs
 				</p>
 				<div class="flex flex-col sm:flex-row gap-4 justify-center">
-					<button 
+					<button
 						class="bg-white text-blue-600 hover:bg-gray-100 font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
 						hx-get="/contact"
 						hx-target="#main-content"
@@ -159,7 +171,7 @@ templ HomePage() {
 					>
 						Contact Sales
 					</button>
-					<button 
+					<button
 						class="border border-white text-white hover:bg-white hover:text-blue-600 font-semibold py-3 px-8 rounded-lg transition-colors duration-200"
 						hx-get="/blog"
 						hx-target="#main-content"
@@ -171,4 +183,245 @@ templ HomePage() {
 			</div>
 		</section>
 	</div>
+	<!-- D3.js Charts Scripts -->
+	<script src="https://d3js.org/d3.v7.min.js"></script>
+	<script>
+		// Sample data for charts
+		const performanceData = [
+			{date: new Date(2024, 0, 1), cpu: 45, memory: 62, network: 78},
+			{date: new Date(2024, 0, 2), cpu: 52, memory: 58, network: 82},
+			{date: new Date(2024, 0, 3), cpu: 48, memory: 65, network: 75},
+			{date: new Date(2024, 0, 4), cpu: 61, memory: 71, network: 88},
+			{date: new Date(2024, 0, 5), cpu: 55, memory: 68, network: 79},
+			{date: new Date(2024, 0, 6), cpu: 43, memory: 59, network: 73},
+			{date: new Date(2024, 0, 7), cpu: 49, memory: 63, network: 81}
+		];
+
+		const resourceData = [
+			{name: 'CPU', value: 68, color: '#3B82F6'},
+			{name: 'Memory', value: 74, color: '#10B981'},
+			{name: 'Storage', value: 45, color: '#8B5CF6'},
+			{name: 'Network', value: 82, color: '#F59E0B'}
+		];
+
+		const trafficData = [
+			{name: 'Web Traffic', value: 45, color: '#3B82F6'},
+			{name: 'API Calls', value: 30, color: '#10B981'},
+			{name: 'Database', value: 15, color: '#8B5CF6'},
+			{name: 'Cache', value: 10, color: '#F59E0B'}
+		];
+
+		// Line Chart
+		function createLineChart() {
+			const margin = {top: 20, right: 80, bottom: 40, left: 50};
+			const width = 400 - margin.left - margin.right;
+			const height = 200 - margin.bottom - margin.top;
+
+			const svg = d3.select("#line-chart")
+				.append("svg")
+				.attr("width", "100%")
+				.attr("height", height + margin.top + margin.bottom)
+				.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+				.append("g")
+				.attr("transform", `translate(${margin.left},${margin.top})`);
+
+			const xScale = d3.scaleTime()
+				.domain(d3.extent(performanceData, d => d.date))
+				.range([0, width]);
+
+			const yScale = d3.scaleLinear()
+				.domain([0, 100])
+				.range([height, 0]);
+
+			const line = d3.line()
+				.x(d => xScale(d.date))
+				.y(d => yScale(d.cpu))
+				.curve(d3.curveMonotoneX);
+
+			// Add axes
+			svg.append("g")
+				.attr("transform", `translate(0,${height})`)
+				.call(d3.axisBottom(xScale).tickFormat(d3.timeFormat("%m/%d")));
+
+			svg.append("g")
+				.call(d3.axisLeft(yScale));
+
+			// Add CPU line
+			svg.append("path")
+				.datum(performanceData)
+				.attr("fill", "none")
+				.attr("stroke", "#3B82F6")
+				.attr("stroke-width", 2)
+				.attr("d", line);
+
+			// Add Memory line
+			const memoryLine = d3.line()
+				.x(d => xScale(d.date))
+				.y(d => yScale(d.memory))
+				.curve(d3.curveMonotoneX);
+
+			svg.append("path")
+				.datum(performanceData)
+				.attr("fill", "none")
+				.attr("stroke", "#10B981")
+				.attr("stroke-width", 2)
+				.attr("d", memoryLine);
+
+			// Add legend
+			const legend = svg.append("g")
+				.attr("transform", `translate(${width - 60}, 20)`);
+
+			legend.append("line")
+				.attr("x1", 0).attr("x2", 15)
+				.attr("y1", 0).attr("y2", 0)
+				.attr("stroke", "#3B82F6")
+				.attr("stroke-width", 2);
+
+			legend.append("text")
+				.attr("x", 20).attr("y", 4)
+				.style("font-size", "12px")
+				.text("CPU");
+
+			legend.append("line")
+				.attr("x1", 0).attr("x2", 15)
+				.attr("y1", 20).attr("y2", 20)
+				.attr("stroke", "#10B981")
+				.attr("stroke-width", 2);
+
+			legend.append("text")
+				.attr("x", 20).attr("y", 24)
+				.style("font-size", "12px")
+				.text("Memory");
+		}
+
+		// Bar Chart
+		function createBarChart() {
+			const margin = {top: 20, right: 20, bottom: 40, left: 50};
+			const width = 400 - margin.left - margin.right;
+			const height = 200 - margin.bottom - margin.top;
+
+			const svg = d3.select("#bar-chart")
+				.append("svg")
+				.attr("width", "100%")
+				.attr("height", height + margin.top + margin.bottom)
+				.attr("viewBox", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+				.append("g")
+				.attr("transform", `translate(${margin.left},${margin.top})`);
+
+			const xScale = d3.scaleBand()
+				.domain(resourceData.map(d => d.name))
+				.range([0, width])
+				.padding(0.3);
+
+			const yScale = d3.scaleLinear()
+				.domain([0, 100])
+				.range([height, 0]);
+
+			// Add axes
+			svg.append("g")
+				.attr("transform", `translate(0,${height})`)
+				.call(d3.axisBottom(xScale));
+
+			svg.append("g")
+				.call(d3.axisLeft(yScale));
+
+			// Add bars
+			svg.selectAll(".bar")
+				.data(resourceData)
+				.enter().append("rect")
+				.attr("class", "bar")
+				.attr("x", d => xScale(d.name))
+				.attr("width", xScale.bandwidth())
+				.attr("y", d => yScale(d.value))
+				.attr("height", d => height - yScale(d.value))
+				.attr("fill", d => d.color)
+				.attr("rx", 4);
+
+			// Add value labels
+			svg.selectAll(".label")
+				.data(resourceData)
+				.enter().append("text")
+				.attr("class", "label")
+				.attr("x", d => xScale(d.name) + xScale.bandwidth() / 2)
+				.attr("y", d => yScale(d.value) - 5)
+				.attr("text-anchor", "middle")
+				.style("font-size", "12px")
+				.style("font-weight", "bold")
+				.text(d => d.value + "%");
+		}
+
+		// Donut Chart
+		function createDonutChart() {
+			const width = 250;
+			const height = 200;
+			const radius = Math.min(width, height) / 2 - 10;
+
+			const svg = d3.select("#donut-chart")
+				.append("svg")
+				.attr("width", width)
+				.attr("height", height)
+				.append("g")
+				.attr("transform", `translate(${width/2},${height/2})`);
+
+			const pie = d3.pie()
+				.value(d => d.value)
+				.sort(null);
+
+			const arc = d3.arc()
+				.innerRadius(radius * 0.6)
+				.outerRadius(radius);
+
+			const arcs = svg.selectAll(".arc")
+				.data(pie(trafficData))
+				.enter().append("g")
+				.attr("class", "arc");
+
+			arcs.append("path")
+				.attr("d", arc)
+				.attr("fill", d => d.data.color)
+				.attr("stroke", "white")
+				.attr("stroke-width", 2);
+
+			// Add labels
+			arcs.append("text")
+				.attr("transform", d => `translate(${arc.centroid(d)})`)
+				.attr("text-anchor", "middle")
+				.style("font-size", "10px")
+				.style("font-weight", "bold")
+				.style("fill", "white")
+				.text(d => d.data.value + "%");
+
+			// Add legend
+			const legend = d3.select("#donut-chart")
+				.append("div")
+				.style("position", "absolute")
+				.style("right", "10px")
+				.style("top", "10px");
+
+			const legendItems = legend.selectAll(".legend-item")
+				.data(trafficData)
+				.enter().append("div")
+				.style("display", "flex")
+				.style("align-items", "center")
+				.style("margin-bottom", "5px");
+
+			legendItems.append("div")
+				.style("width", "12px")
+				.style("height", "12px")
+				.style("background-color", d => d.color)
+				.style("margin-right", "8px")
+				.style("border-radius", "2px");
+
+			legendItems.append("span")
+				.style("font-size", "12px")
+				.text(d => d.name);
+		}
+
+		// Initialize charts when DOM is loaded
+		document.addEventListener('DOMContentLoaded', function() {
+			createLineChart();
+			createBarChart();
+			createDonutChart();
+		});
+	</script>
 }
