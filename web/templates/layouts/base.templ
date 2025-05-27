@@ -12,7 +12,6 @@ templ BaseLayout(title string, csrfToken string, contents templ.Component) {
 			<meta name="csrf-token" content={ csrfToken }/>
 			<title>{ title } - CloudParallax</title>
 			<link rel="stylesheet" href="/static/dist/output.css"/>
-			<script src="https://unpkg.com/htmx.org@2.0.4"></script>
 			<style>
 				.htmx-indicator {
 					opacity: 0;
@@ -32,7 +31,8 @@ templ BaseLayout(title string, csrfToken string, contents templ.Component) {
 			<main class="flex-1" id="main-content">
 				@contents
 			</main>
-			// @components.Footer()
+			@components.Footer()
+			<script src="https://unpkg.com/htmx.org@2.0.4"></script>
 			<script>
 				document.addEventListener('DOMContentLoaded', function() {
 					const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
