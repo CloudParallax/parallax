@@ -34,6 +34,11 @@ func LoadApp() {
 		app.Use("/static*", static.New("", static.Config{
 			FS:     staticfs.StaticFS,
 			Browse: false,
+			MaxAge: 86400, // 24 hours in seconds
+			ModifyResponse: func(c fiber.Ctx) error {
+				c.Set("Cache-Control", "public, max-age=86400")
+				return c.Next()
+			},
 		}))
 
 		app.Use(favicon.New(favicon.Config{
@@ -44,6 +49,11 @@ func LoadApp() {
 		app.Get("/static*", static.New("", static.Config{
 			FS:     os.DirFS("web/static"),
 			Browse: false,
+			MaxAge: 300, // 5 minutes in development
+			ModifyResponse: func(c fiber.Ctx) error {
+				c.Set("Cache-Control", "public, max-age=300")
+				return c.Next()
+			},
 		}))
 		app.Use(favicon.New(favicon.Config{
 			File: "./web/static/favicon.ico",
