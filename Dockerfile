@@ -1,18 +1,6 @@
 # Stage 1: Build environment
 FROM golang:1-alpine AS build-env
 
-# Install build dependencies:
-# git: for Go modules (especially private ones)
-# nodejs & npm: for pnpm
-# pnpm: for Tailwind CSS CLI installation
-RUN apk add --no-cache git nodejs npm
-
-# Install pnpm globally
-RUN npm install -g pnpm
-
-# Install Templ CLI (Go tool)
-RUN go install github.com/a-h/templ/cmd/templ@latest
-
 # Set application name and root directory for the build stage
 ENV APP_ROOT=/app
 WORKDIR ${APP_ROOT}
@@ -24,16 +12,6 @@ RUN go mod tidy # Ensure dependencies are clean and vendor if necessary
 
 # Copy the entire application source code
 COPY . .
-
-# Generate Go code from Templ templates
-# This should run after all source code is copied and dependencies are available
-RUN templ generate
-
-# Build CSS using Tailwind CSS
-# Ensure output directory exists as specified in Makefile (web/static/dist/)
-RUN mkdir -p ./web/static/dist
-RUN rm -rf node_modules && pnpm install
-RUN pnpx @tailwindcss/cli -i ./web/static/main.css -o ./web/static/dist/output.css --minify
 
 # Build the Go application
 # - CGO_ENABLED=0: Create a static binary, important for alpine runtime and distroless
