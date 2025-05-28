@@ -29,8 +29,8 @@ poll = false
 poll_interval = 0
 post_cmd = []
 pre_cmd = [
-  "tailwindcss -i ./web/static/main.css -o ./web/static/dist/output.css",
-  "templ generate",
+  # "tailwindcss -i ./web/static/main.css -o ./web/static/dist/output.css",
+  # "templ generate",
 ]
 rerun = false
 rerun_delay = 500

@@ -4,76 +4,50 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
-	"github.com/cloudparallax/parallax/internal/handlers"
-	"github.com/cloudparallax/parallax/internal/middleware"
-	staticfs "github.com/cloudparallax/parallax/web/static"
+	"github.com/cloudparallax/parallax/internal/adapters/http"
 	"github.com/gofiber/fiber/v3"
-	"github.com/gofiber/fiber/v3/middleware/compress"
-	"github.com/gofiber/fiber/v3/middleware/favicon"
-	"github.com/gofiber/fiber/v3/middleware/logger"
-	recoverer "github.com/gofiber/fiber/v3/middleware/recover"
-	"github.com/gofiber/fiber/v3/middleware/static"
 )
 
+// LoadApp initializes and starts the API server
 func LoadApp() {
-	port := os.Getenv("SERVER_PORT")
+	port := GetEnv("SERVER_PORT", "8080")
 
-	app := fiber.New()
-
-	// Initialize default config
-	app.Use(logger.New())
-
-	// Initialize default config
-	app.Use(compress.New())
-
-	// Initialize default config
-	app.Use(recoverer.New())
-
-	if os.Getenv("ENV") == "production" {
-		app.Use("/static*", static.New("", static.Config{
-			FS:            staticfs.StaticFS,
-			Browse:        false,
-			MaxAge:        86400, // 24 hours in seconds
-			Compress:      true,
-			CacheDuration: time.Minute * 10,
-		}))
-
-		app.Use(favicon.New(favicon.Config{
-			File:       "favicon.ico",
-			FileSystem: staticfs.StaticFS,
-		}))
-	} else {
-		app.Get("/static*", static.New("", static.Config{
-			FS:            os.DirFS("web/static"),
-			Browse:        false,
-			MaxAge:        300, // 5 minutes in development
-			Compress:      true,
-			CacheDuration: time.Minute * 10,
-		}))
-		app.Use(favicon.New(favicon.Config{
-			File: "./web/static/favicon.ico",
-			URL:  "/favicon.ico",
-		}))
-	}
-
-	// Add preload headers for CSS assets
-	app.Use(func(c fiber.Ctx) error {
-		c.Set("Link", "</static/dist/output.css>; rel=preload; as=style")
-		return c.Next()
+	// Create Fiber app with custom config
+	app := fiber.New(fiber.Config{
+		ErrorHandler: customErrorHandler,
+		AppName:      "Parallax API v1.0.0",
 	})
 
-	middleware.LoadMiddleware(app)
-	handlers.LoadHandlers(app)
-	fmt.Printf("Staring Server at :%s", port)
+	// Setup routes (router handles all middleware setup)
+	router := http.NewRouter(app)
+	router.SetupRoutes()
 
+	fmt.Printf("🚀 Starting Parallax API server at :%s\n", port)
 	log.Fatal(app.Listen(fmt.Sprintf(":%s", port)))
 }
 
-func GetEnv(s1, s2 string) string {
-	if value, exists := os.LookupEnv(s1); exists {
+// customErrorHandler handles errors in a consistent way
+func customErrorHandler(ctx fiber.Ctx, err error) error {
+	code := fiber.StatusInternalServerError
+
+	if e, ok := err.(*fiber.Error); ok {
+		code = e.Code
+	}
+
+	return ctx.Status(code).JSON(fiber.Map{
+		"success": false,
+		"error": fiber.Map{
+			"code":    code,
+			"message": err.Error(),
+		},
+	})
+}
+
+// GetEnv gets environment variable with fallback
+func GetEnv(key, fallback string) string {
+	if value, exists := os.LookupEnv(key); exists {
 		return value
 	}
-	return s2
+	return fallback
 }
