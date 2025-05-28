@@ -3,11 +3,12 @@ package handlers
 import (
 	"os"
 	"os/exec"
-	"strings"
 
 	"github.com/cloudparallax/parallax/internal/services"
+	"github.com/cloudparallax/parallax/web/templates/components"
 	"github.com/cloudparallax/parallax/web/templates/layouts"
 	"github.com/cloudparallax/parallax/web/templates/pages"
+	"github.com/cloudparallax/parallax/web/templates/responses"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/csrf"
 )
@@ -88,6 +89,18 @@ func setupMainRoutes(app *fiber.App) {
 
 		return layouts.BaseLayout("About", csrfToken, component).Render(c.Context(), c.Response().BodyWriter())
 	})
+
+	// Contact page
+	app.Get("/contact", func(c fiber.Ctx) error {
+		csrfToken := csrf.TokenFromContext(c)
+		component := pages.ContactPage()
+
+		if isHTMXRequest(c) {
+			return component.Render(c.Context(), c.Response().BodyWriter())
+		}
+
+		return layouts.BaseLayout("Contact", csrfToken, component).Render(c.Context(), c.Response().BodyWriter())
+	})
 }
 
 // setupAPIRoutes configures API endpoints
@@ -101,13 +114,8 @@ func setupAPIRoutes(app *fiber.App) {
 			message = "No message provided"
 		}
 
-		response := `<div class="text-green-700 bg-green-100 border border-green-200 rounded p-2">
-			<strong>✅ Form submitted successfully!</strong><br>
-			Message: ` + message + `<br>
-			<small class="text-green-600">CSRF token was validated automatically</small>
-		</div>`
-
-		return c.Type("text/html").SendString(response)
+		component := responses.FormSuccessResponse(message)
+		return component.Render(c.Context(), c.Response().BodyWriter())
 	})
 
 	// CSS rebuild endpoint for development
@@ -120,18 +128,16 @@ func setupAPIRoutes(app *fiber.App) {
 		output, err := cmd.CombinedOutput()
 		
 		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"success": false,
-				"error": err.Error(),
-				"output": string(output),
-			})
+			errorMsg := `<div class="text-red-700 bg-red-100 border border-red-200 rounded p-2">
+				<strong>❌ CSS rebuild failed!</strong><br/>
+				Error: ` + err.Error() + `<br/>
+				<pre class="text-xs mt-2 text-red-600">` + string(output) + `</pre>
+			</div>`
+			return c.Status(fiber.StatusInternalServerError).Type("text/html").SendString(errorMsg)
 		}
 
-		return c.JSON(fiber.Map{
-			"success": true,
-			"message": "CSS rebuilt successfully",
-			"output": string(output),
-		})
+		component := responses.BuildSuccessResponse(string(output))
+		return component.Render(c.Context(), c.Response().BodyWriter())
 	})
 }
 
@@ -142,68 +148,10 @@ func setupDemoRoutes(app *fiber.App) {
 	// Dynamic content for HTMX demonstrations
 	demo.Get("/content/:id", func(c fiber.Ctx) error {
 		id := c.Params("id")
-		content := getDemoContent(id)
+		component := components.DemoContent(id)
 		
-		// Clean up extra whitespace
-		content = strings.TrimSpace(content)
-		return c.Type("text/html").SendString(content)
+		return component.Render(c.Context(), c.Response().BodyWriter())
 	})
-}
-
-// getDemoContent returns demo content based on ID
-func getDemoContent(id string) string {
-	switch id {
-	case "1":
-		return `
-			<div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-				<h3 class="text-lg font-semibold text-blue-900 mb-2">Dynamic Content 1</h3>
-				<p class="text-blue-700">This content was loaded dynamically using HTMX!
-				   Notice how the page didn't refresh, but the content updated seamlessly.</p>
-				<div class="mt-3">
-					<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-						HTMX Powered
-					</span>
-				</div>
-			</div>
-		`
-	case "2":
-		return `
-			<div class="bg-green-50 border border-green-200 rounded-lg p-4">
-				<h3 class="text-lg font-semibold text-green-900 mb-2">Dynamic Content 2</h3>
-				<p class="text-green-700">This is a different piece of content, also loaded via HTMX.
-				   The server can return any HTML content, making it very flexible.</p>
-				<ul class="mt-3 list-disc list-inside text-green-600 text-sm">
-					<li>No page refresh required</li>
-					<li>Server-rendered content</li>
-					<li>Progressive enhancement</li>
-				</ul>
-			</div>
-		`
-	case "3":
-		return `
-			<div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
-				<h3 class="text-lg font-semibold text-purple-900 mb-2">Dynamic Content 3</h3>
-				<p class="text-purple-700">And here's yet another example! HTMX makes it easy to create
-				   interactive user interfaces without complex JavaScript frameworks.</p>
-				<div class="mt-3 flex space-x-2">
-					<button class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-medium py-1 px-2 rounded"
-					        hx-get="/api/demo/content/1" hx-target="#demo-content">
-						Load Content 1
-					</button>
-					<button class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-medium py-1 px-2 rounded"
-					        hx-get="/api/demo/content/2" hx-target="#demo-content">
-						Load Content 2
-					</button>
-				</div>
-			</div>
-		`
-	default:
-		return `
-			<div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-				<p class="text-gray-500">Unknown content ID</p>
-			</div>
-		`
-	}
 }
 
 // isHTMXRequest checks if the request comes from HTMX

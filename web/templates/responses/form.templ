@@ -1,0 +1,16 @@
+package responses
+
+templ FormSuccessResponse(message string) {
+	<div class="text-green-700 bg-green-100 border border-green-200 rounded p-2">
+		<strong>✅ Form submitted successfully!</strong><br/>
+		Message: { message }<br/>
+		<small class="text-green-600">CSRF token was validated automatically</small>
+	</div>
+}
+
+templ BuildSuccessResponse(output string) {
+	<div class="text-green-700 bg-green-100 border border-green-200 rounded p-2">
+		<strong>✅ CSS rebuilt successfully!</strong><br/>
+		<pre class="text-xs mt-2 text-green-600">{ output }</pre>
+	</div>
+}
