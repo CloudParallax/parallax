@@ -10,17 +10,17 @@ import (
 
 // Response represents a standard API response
 type Response struct {
-	Success bool        `json:"success"`
-	Data    interface{} `json:"data,omitempty"`
-	Error   *ErrorInfo  `json:"error,omitempty"`
-	Meta    *Meta       `json:"meta,omitempty"`
+	Success bool       `json:"success"`
+	Data    any        `json:"data,omitempty"`
+	Error   *ErrorInfo `json:"error,omitempty"`
+	Meta    *Meta      `json:"meta,omitempty"`
 }
 
 // ErrorInfo represents error information in the response
 type ErrorInfo struct {
-	Code    string      `json:"code"`
-	Message string      `json:"message"`
-	Details interface{} `json:"details,omitempty"`
+	Code    string `json:"code"`
+	Message string `json:"message"`
+	Details any    `json:"details,omitempty"`
 }
 
 // Meta represents metadata for the response
@@ -32,7 +32,7 @@ type Meta struct {
 }
 
 // Success sends a successful response
-func Success(c fiber.Ctx, data interface{}) error {
+func Success(c fiber.Ctx, data any) error {
 	return c.Status(http.StatusOK).JSON(Response{
 		Success: true,
 		Data:    data,
@@ -40,7 +40,7 @@ func Success(c fiber.Ctx, data interface{}) error {
 }
 
 // SuccessWithStatus sends a successful response with custom status
-func SuccessWithStatus(c fiber.Ctx, status int, data interface{}) error {
+func SuccessWithStatus(c fiber.Ctx, status int, data any) error {
 	return c.Status(status).JSON(Response{
 		Success: true,
 		Data:    data,
@@ -48,7 +48,7 @@ func SuccessWithStatus(c fiber.Ctx, status int, data interface{}) error {
 }
 
 // SuccessWithMeta sends a successful response with metadata
-func SuccessWithMeta(c fiber.Ctx, data interface{}, meta *Meta) error {
+func SuccessWithMeta(c fiber.Ctx, data any, meta *Meta) error {
 	return c.Status(http.StatusOK).JSON(Response{
 		Success: true,
 		Data:    data,
@@ -57,7 +57,7 @@ func SuccessWithMeta(c fiber.Ctx, data interface{}, meta *Meta) error {
 }
 
 // Created sends a 201 Created response
-func Created(c fiber.Ctx, data interface{}) error {
+func Created(c fiber.Ctx, data any) error {
 	return c.Status(http.StatusCreated).JSON(Response{
 		Success: true,
 		Data:    data,
@@ -186,7 +186,7 @@ func InternalServerError(c fiber.Ctx, message string) error {
 }
 
 // ParseJSON parses JSON request body
-func ParseJSON(c fiber.Ctx, v interface{}) error {
+func ParseJSON(c fiber.Ctx, v any) error {
 	if err := c.Bind().JSON(v); err != nil {
 		return errors.NewAppErrorWithDetails(
 			"INVALID_JSON",
@@ -204,7 +204,7 @@ func NewMeta(page, limit, total int) *Meta {
 	if totalPages < 1 {
 		totalPages = 1
 	}
-	
+
 	return &Meta{
 		Page:       page,
 		Limit:      limit,

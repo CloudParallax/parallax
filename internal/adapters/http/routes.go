@@ -31,16 +31,19 @@ func (r *Router) SetupRoutes() {
 	r.middleware.StartCleanupRoutine()
 
 	// Initialize repositories
-	blogRepo := repositories.NewMemoryBlogRepository()
-	counterRepo := repositories.NewMemoryCounterRepository()
+	tenantRepo := repositories.NewMemoryTenantRepository()
+	locationRepo := repositories.NewMemoryLocationRepository()
+	customerRepo := repositories.NewMemoryCustomerRepository()
 
 	// Initialize use cases
-	blogUseCase := usecases.NewBlogUseCase(blogRepo)
-	counterUseCase := usecases.NewCounterUseCase(counterRepo)
+	tenantUseCase := usecases.NewTenantUseCase(tenantRepo)
+	locationUseCase := usecases.NewLocationUseCase(locationRepo, tenantRepo)
+	customerUseCase := usecases.NewCustomerUseCase(customerRepo, tenantRepo)
 
 	// Initialize controllers
-	blogController := controllers.NewBlogController(blogUseCase)
-	counterController := controllers.NewCounterController(counterUseCase)
+	tenantController := controllers.NewTenantController(tenantUseCase)
+	locationController := controllers.NewLocationController(locationUseCase)
+	customerController := controllers.NewCustomerController(customerUseCase)
 
 	// Setup API routes
 	api := r.app.Group("/api/v1")
@@ -55,10 +58,10 @@ func (r *Router) SetupRoutes() {
 	r.setupAuthRoutes(api)
 
 	// Public routes (optional auth)
-	r.setupPublicRoutes(api, blogController, counterController)
+	r.setupPublicRoutes(api, tenantController, locationController, customerController)
 
 	// Protected routes (auth required)
-	r.setupProtectedRoutes(api, blogController, counterController)
+	r.setupProtectedRoutes(api, tenantController, locationController, customerController)
 }
 
 // setupAuthRoutes configures authentication routes
@@ -79,48 +82,70 @@ func (r *Router) setupAuthRoutes(api fiber.Router) {
 }
 
 // setupPublicRoutes configures public routes (optional auth)
-func (r *Router) setupPublicRoutes(api fiber.Router, blogController *controllers.BlogController, counterController *controllers.CounterController) {
+func (r *Router) setupPublicRoutes(api fiber.Router, tenantController *controllers.TenantController, locationController *controllers.LocationController, customerController *controllers.CustomerController) {
 	// Apply optional auth to all public routes
 	public := api.Group("/", r.middleware.OptionalAuth())
 	
-	blog := public.Group("/blog")
+	// Public tenant routes (read-only)
+	tenants := public.Group("/tenants")
+	tenants.Get("/", tenantController.GetTenants)
+	tenants.Get("/:id", tenantController.GetTenant)
 	
-	// Public blog routes (read-only)
-	blog.Get("/posts", blogController.GetPosts)
-	blog.Get("/posts/published", blogController.GetPublishedPosts)
-	blog.Get("/posts/search", blogController.SearchPosts)
-	blog.Get("/posts/tags", blogController.GetPostsByTags)
-	blog.Get("/posts/:id", blogController.GetPost)
-	blog.Get("/posts/slug/:slug", blogController.GetPostBySlug)
+	// Public location routes (read-only)
+	locations := public.Group("/tenants/:tenantId/locations")
+	locations.Get("/", locationController.GetLocationsByTenant)
+	locations.Get("/active", locationController.GetActiveLocationsByTenant)
 	
-	// Public counter routes (read-only)
-	counter := public.Group("/counter")
-	counter.Get("/", counterController.GetAllCounters)
-	counter.Get("/:id", counterController.GetCounter)
+	// Individual location routes
+	location := public.Group("/locations")
+	location.Get("/:id", locationController.GetLocation)
+	
+	// Public customer routes (read-only)
+	customers := public.Group("/tenants/:tenantId/customers")
+	customers.Get("/", customerController.GetCustomersByTenant)
+	customers.Get("/search", customerController.SearchCustomers)
+	
+	// Individual customer routes
+	customer := public.Group("/customers")
+	customer.Get("/:id", customerController.GetCustomer)
 }
 
 // setupProtectedRoutes configures protected routes (auth required)
-func (r *Router) setupProtectedRoutes(api fiber.Router, blogController *controllers.BlogController, counterController *controllers.CounterController) {
+func (r *Router) setupProtectedRoutes(api fiber.Router, tenantController *controllers.TenantController, locationController *controllers.LocationController, customerController *controllers.CustomerController) {
 	// Apply auth and CSRF protection to all protected routes
 	protected := api.Group("/", r.middleware.RequireAuth(), r.middleware.SetupCSRF())
 	
-	blog := protected.Group("/blog")
+	// Protected tenant routes (write operations)
+	tenants := protected.Group("/tenants")
+	tenants.Post("/", tenantController.CreateTenant)
+	tenants.Put("/:id", tenantController.UpdateTenant)
+	tenants.Delete("/:id", tenantController.DeleteTenant)
+	tenants.Post("/:id/activate", tenantController.ActivateTenant)
+	tenants.Post("/:id/deactivate", tenantController.DeactivateTenant)
 	
-	// Protected blog routes (write operations)
-	blog.Post("/posts", blogController.CreatePost)
-	blog.Put("/posts/:id", blogController.UpdatePost)
-	blog.Delete("/posts/:id", blogController.DeletePost)
-	blog.Post("/posts/:id/publish", blogController.PublishPost)
-	blog.Post("/posts/:id/unpublish", blogController.UnpublishPost)
+	// Protected location routes (write operations)
+	locations := protected.Group("/tenants/:tenantId/locations")
+	locations.Post("/", locationController.CreateLocation)
 	
-	// Protected counter routes (write operations)
-	counter := protected.Group("/counter")
-	counter.Post("/", counterController.CreateCounter)
-	counter.Delete("/:id", counterController.DeleteCounter)
-	counter.Put("/:id/increment", counterController.IncrementCounter)
-	counter.Put("/:id/decrement", counterController.DecrementCounter)
-	counter.Put("/:id/value", counterController.SetCounterValue)
-	counter.Put("/:id/reset", counterController.ResetCounter)
+	// Individual location write operations
+	location := protected.Group("/locations")
+	location.Put("/:id", locationController.UpdateLocation)
+	location.Delete("/:id", locationController.DeleteLocation)
+	location.Post("/:id/activate", locationController.ActivateLocation)
+	location.Post("/:id/deactivate", locationController.DeactivateLocation)
+	
+	// Protected customer routes (write operations)
+	customers := protected.Group("/tenants/:tenantId/customers")
+	customers.Post("/", customerController.CreateCustomer)
+	
+	// Individual customer write operations
+	customer := protected.Group("/customers")
+	customer.Put("/:id", customerController.UpdateCustomer)
+	customer.Delete("/:id", customerController.DeleteCustomer)
+	customer.Post("/:id/activate", customerController.ActivateCustomer)
+	customer.Post("/:id/deactivate", customerController.DeactivateCustomer)
+	customer.Post("/:id/tags", customerController.AddTag)
+	customer.Delete("/:id/tags", customerController.RemoveTag)
 	
 	// Admin routes (require admin role)
 	admin := protected.Group("/admin", r.middleware.RequireRole("admin"))
@@ -191,7 +216,7 @@ func (r *Router) helloWorld(c fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"success": true,
 		"message": "Hello, " + name + "!",
-		"api":     "Parallax API",
+		"api":     "Parallax Workplace Management API",
 		"version": "1.0.0",
 		"middleware": fiber.Map{
 			"cors":        "enabled",
@@ -282,7 +307,7 @@ func (r *Router) deleteUser(c fiber.Ctx) error {
 func (r *Router) healthCheck(c fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"status":  "ok",
-		"service": "parallax-api",
+		"service": "parallax-workplace-management-api",
 		"version": "1.0.0",
 	})
 }
