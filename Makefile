@@ -52,14 +52,9 @@ templ-generate:
 	@which templ > /dev/null || go install github.com/a-h/templ/cmd/templ@latest
 	templ generate
 
-# Build CSS
-css-build:
-	@echo "Building CSS..."
-	tailwindcss -i ./web/static/main.css -o ./web/static/dist/output.css --minify
-
 
 # Build the application
-build: clean templ-generate css-build
+build: clean
 	@echo "Building $(APP_NAME)..."
 	@mkdir -p $(BINARY_DIR)
 	go build -ldflags="-s -w" -o $(BINARY_PATH) ./cmd/parallax
