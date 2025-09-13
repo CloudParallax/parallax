@@ -24,13 +24,13 @@ type MiddlewareConfig struct {
 	// Auth configuration
 	SessionCookieName string
 	SessionMaxAge     time.Duration
-	
+
 	// CSRF configuration
 	CSRFConfig CSRFConfig
-	
+
 	// Rate limit configuration
 	RateLimitConfig RateLimitConfig
-	
+
 	// Environment
 	Environment string
 }
@@ -72,7 +72,7 @@ func (m *MiddlewareManager) SetupGlobalMiddleware(app *fiber.App) {
 	app.Use(logger.New(logger.Config{
 		Format:     "[${time}] ${status} - ${method} ${path} - ${latency} - ${ip}\n",
 		TimeFormat: "15:04:05",
-		Output:     os.Stdout,
+		Stream:     os.Stdout,
 	}))
 
 	// Recover middleware
@@ -146,19 +146,19 @@ func (m *MiddlewareManager) securityHeaders() fiber.Handler {
 	return func(c fiber.Ctx) error {
 		// Prevent MIME type sniffing
 		c.Set("X-Content-Type-Options", "nosniff")
-		
+
 		// Prevent clickjacking
 		c.Set("X-Frame-Options", "DENY")
-		
+
 		// Enable XSS protection
 		c.Set("X-XSS-Protection", "1; mode=block")
-		
+
 		// Referrer policy
 		c.Set("Referrer-Policy", "strict-origin-when-cross-origin")
-		
+
 		// Content Security Policy (basic)
 		c.Set("Content-Security-Policy", "default-src 'self'")
-		
+
 		return c.Next()
 	}
 }
@@ -167,7 +167,7 @@ func (m *MiddlewareManager) securityHeaders() fiber.Handler {
 func (m *MiddlewareManager) CleanupMiddlewares() {
 	// Cleanup expired sessions
 	m.auth.CleanupExpiredSessions()
-	
+
 	// Cleanup expired rate limiters
 	m.rateLimit.CleanupExpiredLimiters()
 }
@@ -177,7 +177,7 @@ func (m *MiddlewareManager) StartCleanupRoutine() {
 	go func() {
 		ticker := time.NewTicker(30 * time.Minute)
 		defer ticker.Stop()
-		
+
 		for range ticker.C {
 			m.CleanupMiddlewares()
 		}
@@ -198,16 +198,16 @@ func parseDuration(key string, fallback time.Duration) time.Duration {
 	if value == "" {
 		return fallback
 	}
-	
+
 	// Try parsing as duration string (e.g., "24h", "30m")
 	if duration, err := time.ParseDuration(value); err == nil {
 		return duration
 	}
-	
+
 	// Try parsing as hours
 	if hours, err := strconv.Atoi(value); err == nil {
 		return time.Duration(hours) * time.Hour
 	}
-	
+
 	return fallback
 }

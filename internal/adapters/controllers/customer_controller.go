@@ -47,7 +47,7 @@ func (cc *CustomerController) CreateCustomer(c fiber.Ctx) error {
 		})
 	}
 
-	customer, err := cc.customerUseCase.CreateCustomer(c.Context(), tenantID, req.FirstName, req.LastName, req.Email)
+	customer, err := cc.customerUseCase.CreateCustomer(c.RequestCtx(), tenantID, req.FirstName, req.LastName, req.Email)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -79,7 +79,7 @@ func (cc *CustomerController) GetCustomer(c fiber.Ctx) error {
 		})
 	}
 
-	customer, err := cc.customerUseCase.GetCustomer(c.Context(), id)
+	customer, err := cc.customerUseCase.GetCustomer(c.RequestCtx(), id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"success": false,
@@ -118,7 +118,7 @@ func (cc *CustomerController) GetCustomersByTenant(c fiber.Ctx) error {
 		limit = 100
 	}
 
-	customers, err := cc.customerUseCase.GetCustomersByTenant(c.Context(), tenantID, limit, offset)
+	customers, err := cc.customerUseCase.GetCustomersByTenant(c.RequestCtx(), tenantID, limit, offset)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
@@ -177,7 +177,7 @@ func (cc *CustomerController) SearchCustomers(c fiber.Ctx) error {
 		limit = 100
 	}
 
-	customers, err := cc.customerUseCase.SearchCustomersByName(c.Context(), tenantID, query, limit, offset)
+	customers, err := cc.customerUseCase.SearchCustomersByName(c.RequestCtx(), tenantID, query, limit, offset)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
@@ -230,7 +230,7 @@ func (cc *CustomerController) UpdateCustomer(c fiber.Ctx) error {
 		})
 	}
 
-	customer, err := cc.customerUseCase.UpdateCustomer(c.Context(), id, req.FirstName, req.LastName, req.Email, req.Phone, req.Address, req.City, req.State, req.Country, req.PostalCode, req.CompanyName, req.JobTitle, req.Notes, req.Tags)
+	customer, err := cc.customerUseCase.UpdateCustomer(c.RequestCtx(), id, req.FirstName, req.LastName, req.Email, req.Phone, req.Address, req.City, req.State, req.Country, req.PostalCode, req.CompanyName, req.JobTitle, req.Notes, req.Tags)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -262,7 +262,7 @@ func (cc *CustomerController) ActivateCustomer(c fiber.Ctx) error {
 		})
 	}
 
-	customer, err := cc.customerUseCase.ActivateCustomer(c.Context(), id)
+	customer, err := cc.customerUseCase.ActivateCustomer(c.RequestCtx(), id)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -294,7 +294,7 @@ func (cc *CustomerController) DeactivateCustomer(c fiber.Ctx) error {
 		})
 	}
 
-	customer, err := cc.customerUseCase.DeactivateCustomer(c.Context(), id)
+	customer, err := cc.customerUseCase.DeactivateCustomer(c.RequestCtx(), id)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -337,7 +337,7 @@ func (cc *CustomerController) AddTag(c fiber.Ctx) error {
 		})
 	}
 
-	customer, err := cc.customerUseCase.AddCustomerTag(c.Context(), id, req.Tag)
+	customer, err := cc.customerUseCase.AddCustomerTag(c.RequestCtx(), id, req.Tag)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -380,7 +380,7 @@ func (cc *CustomerController) RemoveTag(c fiber.Ctx) error {
 		})
 	}
 
-	customer, err := cc.customerUseCase.RemoveCustomerTag(c.Context(), id, req.Tag)
+	customer, err := cc.customerUseCase.RemoveCustomerTag(c.RequestCtx(), id, req.Tag)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -412,7 +412,7 @@ func (cc *CustomerController) DeleteCustomer(c fiber.Ctx) error {
 		})
 	}
 
-	err = cc.customerUseCase.DeleteCustomer(c.Context(), id)
+	err = cc.customerUseCase.DeleteCustomer(c.RequestCtx(), id)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,

@@ -35,7 +35,7 @@ func (tc *TenantController) CreateTenant(c fiber.Ctx) error {
 		})
 	}
 
-	tenant, err := tc.tenantUseCase.CreateTenant(c.Context(), req.Name, req.Domain, req.Plan, req.MaxUsers, req.MaxLocations)
+	tenant, err := tc.tenantUseCase.CreateTenant(c.RequestCtx(), req.Name, req.Domain, req.Plan, req.MaxUsers, req.MaxLocations)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -67,7 +67,7 @@ func (tc *TenantController) GetTenant(c fiber.Ctx) error {
 		})
 	}
 
-	tenant, err := tc.tenantUseCase.GetTenant(c.Context(), id)
+	tenant, err := tc.tenantUseCase.GetTenant(c.RequestCtx(), id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"success": false,
@@ -94,7 +94,7 @@ func (tc *TenantController) GetTenants(c fiber.Ctx) error {
 		limit = 100
 	}
 
-	tenants, err := tc.tenantUseCase.GetAllTenants(c.Context(), limit, offset)
+	tenants, err := tc.tenantUseCase.GetAllTenants(c.RequestCtx(), limit, offset)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
@@ -146,7 +146,7 @@ func (tc *TenantController) UpdateTenant(c fiber.Ctx) error {
 		})
 	}
 
-	tenant, err := tc.tenantUseCase.UpdateTenant(c.Context(), id, req.Name, req.Plan, req.MaxUsers, req.MaxLocations)
+	tenant, err := tc.tenantUseCase.UpdateTenant(c.RequestCtx(), id, req.Name, req.Plan, req.MaxUsers, req.MaxLocations)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -178,7 +178,7 @@ func (tc *TenantController) ActivateTenant(c fiber.Ctx) error {
 		})
 	}
 
-	tenant, err := tc.tenantUseCase.ActivateTenant(c.Context(), id)
+	tenant, err := tc.tenantUseCase.ActivateTenant(c.RequestCtx(), id)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -210,7 +210,7 @@ func (tc *TenantController) DeactivateTenant(c fiber.Ctx) error {
 		})
 	}
 
-	tenant, err := tc.tenantUseCase.DeactivateTenant(c.Context(), id)
+	tenant, err := tc.tenantUseCase.DeactivateTenant(c.RequestCtx(), id)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -242,7 +242,7 @@ func (tc *TenantController) DeleteTenant(c fiber.Ctx) error {
 		})
 	}
 
-	err = tc.tenantUseCase.DeleteTenant(c.Context(), id)
+	err = tc.tenantUseCase.DeleteTenant(c.RequestCtx(), id)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,

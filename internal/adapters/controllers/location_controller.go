@@ -47,7 +47,7 @@ func (lc *LocationController) CreateLocation(c fiber.Ctx) error {
 		})
 	}
 
-	location, err := lc.locationUseCase.CreateLocation(c.Context(), tenantID, req.Name, req.Address, req.City, req.State, req.Country, req.PostalCode)
+	location, err := lc.locationUseCase.CreateLocation(c.RequestCtx(), tenantID, req.Name, req.Address, req.City, req.State, req.Country, req.PostalCode)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -79,7 +79,7 @@ func (lc *LocationController) GetLocation(c fiber.Ctx) error {
 		})
 	}
 
-	location, err := lc.locationUseCase.GetLocation(c.Context(), id)
+	location, err := lc.locationUseCase.GetLocation(c.RequestCtx(), id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"success": false,
@@ -118,7 +118,7 @@ func (lc *LocationController) GetLocationsByTenant(c fiber.Ctx) error {
 		limit = 100
 	}
 
-	locations, err := lc.locationUseCase.GetLocationsByTenant(c.Context(), tenantID, limit, offset)
+	locations, err := lc.locationUseCase.GetLocationsByTenant(c.RequestCtx(), tenantID, limit, offset)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
@@ -159,7 +159,7 @@ func (lc *LocationController) GetActiveLocationsByTenant(c fiber.Ctx) error {
 		})
 	}
 
-	locations, err := lc.locationUseCase.GetActiveLocationsByTenant(c.Context(), tenantID)
+	locations, err := lc.locationUseCase.GetActiveLocationsByTenant(c.RequestCtx(), tenantID)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
@@ -206,7 +206,7 @@ func (lc *LocationController) UpdateLocation(c fiber.Ctx) error {
 		})
 	}
 
-	location, err := lc.locationUseCase.UpdateLocation(c.Context(), id, req.Name, req.Address, req.City, req.State, req.Country, req.PostalCode, req.Phone, req.Email, req.Description, req.Capacity)
+	location, err := lc.locationUseCase.UpdateLocation(c.RequestCtx(), id, req.Name, req.Address, req.City, req.State, req.Country, req.PostalCode, req.Phone, req.Email, req.Description, req.Capacity)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -238,7 +238,7 @@ func (lc *LocationController) ActivateLocation(c fiber.Ctx) error {
 		})
 	}
 
-	location, err := lc.locationUseCase.ActivateLocation(c.Context(), id)
+	location, err := lc.locationUseCase.ActivateLocation(c.RequestCtx(), id)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -270,7 +270,7 @@ func (lc *LocationController) DeactivateLocation(c fiber.Ctx) error {
 		})
 	}
 
-	location, err := lc.locationUseCase.DeactivateLocation(c.Context(), id)
+	location, err := lc.locationUseCase.DeactivateLocation(c.RequestCtx(), id)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
@@ -302,7 +302,7 @@ func (lc *LocationController) DeleteLocation(c fiber.Ctx) error {
 		})
 	}
 
-	err = lc.locationUseCase.DeleteLocation(c.Context(), id)
+	err = lc.locationUseCase.DeleteLocation(c.RequestCtx(), id)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
